@@ -699,12 +699,12 @@ public class SDVUtil {
         setHtmlCellEditors(tableFacade, allColumns, true);
 
         // temporarily disable some of the filters for now
-        turnOffFilters(tableFacade, new String[] { "studySubjectStatus", "crfName", "crfVersion", "lastUpdatedDate",
+        turnOffFilters(tableFacade, new String[] { "studySubjectStatus", "crfVersion", "lastUpdatedDate",
                 "lastUpdatedBy", "eventDate" });
 
         turnOffSorts(tableFacade,
                 new String[] { "sdvStatus", "studySubjectId", "studyIdentifier", "openQueries", "eventName",
-                        "studySubjectStatus", "crfName", "crfVersion", "sdvRequirementDefinition", "crfStatus", "lastUpdatedBy", "subjectEventStatus",
+                        "studySubjectStatus", "crfVersion", "sdvRequirementDefinition", "crfStatus", "lastUpdatedBy", "subjectEventStatus",
                         "sdvStatusActions" });
 
         // Create the custom toolbar
