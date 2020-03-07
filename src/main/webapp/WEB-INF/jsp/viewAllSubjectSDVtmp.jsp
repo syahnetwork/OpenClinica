@@ -22,7 +22,7 @@
 
         <div class="sidebar_tab_content">
 
-            <%--            <fmt:message key="design_implement_sdv" bundle="${restext}"/>--%>
+            <fmt:message key="design_implement_sdv" bundle="${restext}"/>
 
         </div>
 
@@ -39,87 +39,7 @@
 
     </td>
 </tr>
-
-<tr id="sidebar_IconKey_open">
-    <td class="sidebar_tab">
-
-        <a href="javascript:leftnavExpand('sidebar_IconKey_open'); leftnavExpand('sidebar_IconKey_closed');"><span
-                class="icon icon-caret-down gray"></span></a>
-
-        Icon Key<br clear="all"><br>
-
-        <table border="0" cellpadding="4" cellspacing="0" width="100%">
-            <tbody>
-            <tr>
-                <td>Statuses</td>
-            </tr>
-            <tr>
-                <td>&nbsp;<span class="icon icon-doc"></span></td>
-                <td>Not Started</td>
-            </tr>
-            <tr>
-                <td>&nbsp;<span class="icon icon-clock"></span></td>
-                <td>Not Scheduled</td>
-            </tr>
-            <tr>
-                <td>&nbsp;<span class="icon icon-clock2"></span></td>
-                <td>Scheduled</td>
-            </tr>
-            <tr>
-                <td>&nbsp;<span class="icon icon-pencil-squared orange"></span></td>
-                <td>Data Entry Started</td>
-            </tr>
-            <tr>
-                <td>&nbsp;<span class="icon icon-stop-circle red"></span></td>
-                <td>Stopped</td>
-            </tr>
-            <tr>
-                <td>&nbsp;<span class="icon icon-redo"></span></td>
-                <td>Skipped</td>
-            </tr>
-            <tr>
-                <td>&nbsp;<span class="icon icon-checkbox-checked green"></span></td>
-                <td>Completed</td>
-            </tr>
-            <tr>
-                <td>&nbsp;<span class="icon icon-icon-sign green"></span></td>
-                <td>Signed</td>
-            </tr>
-            <tr>
-                <td>&nbsp;<span class="icon icon-lock"></span></td>
-                <td>Locked</td>
-            </tr>
-            <tr>
-                <td>&nbsp;<span class="icon icon-file-excel red"></span></td>
-                <td>Invalid</td>
-            </tr>
-            </tbody>
-        </table>
-    </td>
-</tr>
-
-<tr id="sidebar_IconKey_closed" style="display: none">
-    <td class="sidebar_tab">
-        <a href="javascript:leftnavExpand('sidebar_IconKey_open'); leftnavExpand('sidebar_IconKey_closed');"><span
-                class="icon icon-caret-right gray"></span></a>
-        Icon Key
-    </td>
-</tr>
-
-<script>
-    $(document).ready(function () {
-        $('#sidebar_Info_closed').css('display', 'none');
-        $('#sidebar_Info_open').removeAttr('style');
-
-        $('#sidebar_Links_closed').css('display', 'none');
-        $('#sidebar_Links_open').removeAttr('style');
-    });
-</script>
-
-
 <jsp:include page="include/sideInfo.jsp"/>
-
-
 <link rel="stylesheet" href="../includes/jmesa/jmesa.css" type="text/css">
 <script type="text/JavaScript" language="JavaScript"
         src="${pageContext.request.contextPath}/includes/jmesa/jquery.min.js"></script>
@@ -181,9 +101,7 @@
 
 <jsp:useBean scope='session' id='sSdvRestore' class='java.lang.String'/>
 <c:set var="restore" value="true"/>
-<c:if test="${sSdvRestore=='false'}">
-    <c:set var="restore" value="false"/>
-</c:if>
+<c:if test="${sSdvRestore=='false'}"><c:set var="restore" value="false"/></c:if>
 
 <script type="text/javascript">
     function setRedirection(formObj) {
@@ -218,8 +136,7 @@
         <%--This value will be set by an onclick handler associated with an SDV button --%>
         <input type="hidden" name="crfId" value="0">
         <%-- the destination JSP page after removal or adding SDV for an eventCRF --%>
-        <input type="hidden" name="redirection"
-               value="viewAllSubjectSDVtmp?sdv_restore=true&studyId=${param.studyId}">
+        <input type="hidden" name="redirection" value="viewAllSubjectSDVtmp?sdv_restore=true&studyId=${param.studyId}">
         <%--<input type="hidden" name="decorator" value="mydecorator">--%>
         ${sdvTableAttribute}
         <br/>
@@ -284,8 +201,7 @@
     });
 </script>
 
-<link rel="stylesheet" type="text/css"
-      href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css"/>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css"/>
 <script type="text/JavaScript" language="JavaScript"
         src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
 <script type="text/JavaScript" language="JavaScript"
@@ -398,12 +314,11 @@
     </table>
     <fieldset id="sdv-show-type">
         <label>
-            <input type="radio" name="sinceLastVerified" value="n" autofocus="autofocus"
-                   checked="checked"> Show all items
+            <input type="radio" name="sinceLastVerified" value="n" autofocus="autofocus" checked="checked"> Show all
+            items
         </label>
         <label>
-            <input type="radio" name="sinceLastVerified" value="y"> Show only changed since last
-            Verified
+            <input type="radio" name="sinceLastVerified" value="y"> Show only changed since last Verified
         </label>
     </fieldset>
 
@@ -423,9 +338,8 @@
         <tbody>
         </tbody>
     </table>
-    <input type="button" id="sdvVerify" name="sdvVerify" value="Verify"
-           onclick="submitSdv(document.sdvForm, 2)" data-eventcrfid="2" data-formlayoutid="1"
-           data-studyeventid="1">
+    <input type="button" id="sdvVerify" name="sdvVerify" value="Verify" onclick="submitSdv(document.sdvForm, 2)"
+           data-eventcrfid="2" data-formlayoutid="1" data-studyeventid="1">
 </div>
 
 <script>
@@ -530,10 +444,7 @@
             $(verifyButton).click();
         });
 
-        jQuery.blockUI({
-            message: jQuery('#itemsdv'),
-            css: {cursor: 'default', left: '75px', top: '100px'}
-        });
+        jQuery.blockUI({message: jQuery('#itemsdv'), css: {cursor: 'default', left: '75px', top: '100px'}});
     }
 
 </script>
