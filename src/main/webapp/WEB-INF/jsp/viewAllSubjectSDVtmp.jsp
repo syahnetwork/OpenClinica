@@ -449,7 +449,10 @@
             $(verifyButton).click();
         });
 
-        jQuery.blockUI({message: jQuery('#itemsdv'), css: {cursor: 'default', left: '75px', top: '100px'}});
+        jQuery.blockUI({
+            message: jQuery('#itemsdv'),
+            css: {cursor: 'default', left: '75px', top: '100px', height: '80%', overflow: 'auto'}
+        });
     });
 
 </script>
