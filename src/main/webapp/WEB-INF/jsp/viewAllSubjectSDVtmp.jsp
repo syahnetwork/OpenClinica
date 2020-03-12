@@ -263,13 +263,13 @@
     #sdv-close-popup {
         float: right;
         position: absolute;
-        right: -25px;
-        top: -25px;
+        right: 0;
+        top: 0;
     }
 
     #sdv-close-popup > .icon-cancel::before {
         border-radius: 50px;
-        color: white;
+        color: red;
     }
 
     #clear-filter {
@@ -288,7 +288,7 @@
 </style>
 
 <div id="itemsdv" style="display:none;">
-    <a href="javascript:jQuery.unblockUI()" id="sdv-close-popup">
+    <a href="javascript:jQuery.unblockUI()" id="sdv-close-popup" title="close">
         <span class="icon icon-cancel"></span>
     </a>
     <table id="sdv-details">
@@ -451,7 +451,7 @@
 
         jQuery.blockUI({
             message: jQuery('#itemsdv'),
-            css: {cursor: 'default', left: '75px', top: '100px', height: '80%', overflow: 'auto'}
+            css: {cursor: 'default', left: '75px', top: '100px', height: '80%', overflowY: 'auto', overflowX: 'hidden'}
         });
 
         $(function () {
