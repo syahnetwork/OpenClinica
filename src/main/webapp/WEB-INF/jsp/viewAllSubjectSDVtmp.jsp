@@ -41,8 +41,8 @@
 </tr>
 <jsp:include page="include/sideInfo.jsp"/>
 <link rel="stylesheet" href="../includes/jmesa/jmesa.css" type="text/css">
-<script type="text/JavaScript" language="JavaScript"
-        src="${pageContext.request.contextPath}/includes/jmesa/jquery.min.js"></script>
+<%--<script type="text/JavaScript" language="JavaScript"--%>
+<%--        src="${pageContext.request.contextPath}/includes/jmesa/jquery.min.js"></script>--%>
 <script type="text/JavaScript" language="JavaScript"
         src="${pageContext.request.contextPath}/includes/jmesa/jmesa.js"></script>
 <script type="text/JavaScript" language="JavaScript"
@@ -166,11 +166,11 @@
                     store.data.datatables.some(function (state) {
                         return canReset(state)
                     }) ||
-                    $('#studySubjectRecord.collapsed, #subjectEvents.collapsed, #commonEvents>.expanded').length
+                    jQuery('#studySubjectRecord.collapsed, #subjectEvents.collapsed, #commonEvents>.expanded').length
                 )
-                    $('#reset-all-filters').removeClass('invisible');
+                    jQuery('#reset-all-filters').removeClass('invisible');
                 else
-                    $('#reset-all-filters').addClass('invisible');
+                    jQuery('#reset-all-filters').addClass('invisible');
                 store.dirty = false;
             }, 1);
         }
@@ -182,9 +182,9 @@
     };
     store.dirty = false;
 
-    $('#sdv')
+    jQuery('#sdv')
         .on('change', 'input[type=checkbox]', function () {
-            var checkbox = $(this);
+            var checkbox = jQuery(this);
             var name = checkbox.attr('name');
             var checked = checkbox.is(':checked');
             store(function (data) {
@@ -192,7 +192,7 @@
             });
         })
         .find('input[type=checkbox]').each(function () {
-        var checkbox = $(this);
+        var checkbox = jQuery(this);
         var name = checkbox.attr('name');
         var checked = store.data.sdvChecks[name];
         if (checked)
@@ -381,26 +381,26 @@
         }
     }
 
-    $('#sdv').on('click', '.popupSdv', function () {
-        var data = $(this).data();
+    jQuery('#sdv').on('click', '.popupSdv', function () {
+        var data = jQuery(this).data();
         var url = 'auth/api/sdv/studies/' + data.studyOid + '/events/' + data.eventOid + '/occurrences/' + data.eventOrdinal + '/forms/' + data.formOid + '/participants/' + data.participantId + '/sdvItems';
 
         function getItems() {
-            var sinceLastVerified = $('#sdv-show-type input:checked').val();
-            $.get(url + '?changedAfterSdvOnlyFilter=' + sinceLastVerified, function (data) {
+            var sinceLastVerified = jQuery('#sdv-show-type input:checked').val();
+            jQuery.get(url + '?changedAfterSdvOnlyFilter=' + sinceLastVerified, function (data) {
 
-                $('#participantId').text(data.participantId);
+                jQuery('#participantId').text(data.participantId);
                 if (data.repeatingEvent) {
-                    $('#eventName').text(data.eventName + ' (' + data.eventOrdinal + ')');
+                    jQuery('#eventName').text(data.eventName + ' (' + data.eventOrdinal + ')');
                 } else {
-                    $('#eventName').text(data.eventName);
+                    jQuery('#eventName').text(data.eventName);
                 }
-                $('#formName').text(data.formName);
-                $('#sdvRequirement').text(translate(data.sdvRequirement));
-                $('#siteName').text(data.siteName);
-                $('#eventStartDate').text(formatDate(data.eventStartDate));
-                $('#formStatus').text(data.formStatus);
-                $('#sdvStatus').text(data.sdvStatus);
+                jQuery('#formName').text(data.formName);
+                jQuery('#sdvRequirement').text(translate(data.sdvRequirement));
+                jQuery('#siteName').text(data.siteName);
+                jQuery('#eventStartDate').text(formatDate(data.eventStartDate));
+                jQuery('#formStatus').text(data.formStatus);
+                jQuery('#sdvStatus').text(data.sdvStatus);
 
                 itemsTable.rows.add(data.sdvItems.map(function (item) {
                     item.briefDescriptionItemName = item.briefDescription + ' (' + item.name + ')';
@@ -432,21 +432,21 @@
             });
         }
 
-        $('#sdv-show-type').off('change');
+        jQuery('#sdv-show-type').off('change');
         if (data.sdvStatus === 'VERIFIED') {
-            $('#sdv-show-type input[value=n]').click();
+            jQuery('#sdv-show-type input[value=n]').click();
         } else {
-            $('#sdv-show-type input[value=y]').click();
+            jQuery('#sdv-show-type input[value=y]').click();
         }
 
-        $('#sdv-show-type').change(function () {
+        jQuery('#sdv-show-type').change(function () {
             itemsTable.clear().draw();
             getItems();
         }).change();
 
-        var verifyButton = $(this).siblings()[3];
-        $('#sdvVerify').off('click').click(function () {
-            $(verifyButton).click();
+        var verifyButton = jQuery(this).siblings()[3];
+        jQuery('#sdvVerify').off('click').click(function () {
+            jQuery(verifyButton).click();
         });
 
         jQuery.blockUI({
@@ -454,8 +454,8 @@
             css: {cursor: 'default', left: '75px', top: '100px', height: '80%', overflowY: 'auto', overflowX: 'hidden'}
         });
 
-        $(function () {
-            $('input[value="n"]').click()
+        jQuery(function () {
+            jQuery('input[value="n"]').click()
         })
     });
 </script>
