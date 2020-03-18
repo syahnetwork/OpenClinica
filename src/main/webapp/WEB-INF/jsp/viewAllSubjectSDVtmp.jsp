@@ -457,5 +457,7 @@
         jQuery(function () {
             jQuery('input[value="n"]').click()
         })
+
+        return false;
     });
 </script>
