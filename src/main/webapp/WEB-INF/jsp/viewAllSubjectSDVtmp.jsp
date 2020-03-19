@@ -22,13 +22,12 @@
 
         <div class="sidebar_tab_content">
 
-            <fmt:message key="design_implement_sdv" bundle="${restext}"/>
+            <%--            <fmt:message key="design_implement_sdv" bundle="${restext}"/>--%>
 
         </div>
-
     </td>
-
 </tr>
+
 <tr id="sidebar_Instructions_closed" style="display: none">
     <td class="sidebar_tab">
 
@@ -39,7 +38,85 @@
 
     </td>
 </tr>
+
+<tr id="sidebar_IconKey_open">
+    <td class="sidebar_tab">
+
+        <a href="javascript:leftnavExpand('sidebar_IconKey_open'); leftnavExpand('sidebar_IconKey_closed');"><span
+                class="icon icon-caret-down gray"></span></a>
+
+        Icon Key<br clear="all"><br>
+
+        <table border="0" cellpadding="4" cellspacing="0" width="100%">
+            <tbody>
+            <tr>
+                <td>Statuses</td>
+            </tr>
+            <tr>
+                <td>&nbsp;<span class="icon icon-doc"></span></td>
+                <td>Not Started</td>
+            </tr>
+            <tr>
+                <td>&nbsp;<span class="icon icon-clock"></span></td>
+                <td>Not Scheduled</td>
+            </tr>
+            <tr>
+                <td>&nbsp;<span class="icon icon-clock2"></span></td>
+                <td>Scheduled</td>
+            </tr>
+            <tr>
+                <td>&nbsp;<span class="icon icon-pencil-squared orange"></span></td>
+                <td>Data Entry Started</td>
+            </tr>
+            <tr>
+                <td>&nbsp;<span class="icon icon-stop-circle red"></span></td>
+                <td>Stopped</td>
+            </tr>
+            <tr>
+                <td>&nbsp;<span class="icon icon-redo"></span></td>
+                <td>Skipped</td>
+            </tr>
+            <tr>
+                <td>&nbsp;<span class="icon icon-checkbox-checked green"></span></td>
+                <td>Completed</td>
+            </tr>
+            <tr>
+                <td>&nbsp;<span class="icon icon-icon-sign green"></span></td>
+                <td>Signed</td>
+            </tr>
+            <tr>
+                <td>&nbsp;<span class="icon icon-lock"></span></td>
+                <td>Locked</td>
+            </tr>
+            <tr>
+                <td>&nbsp;<span class="icon icon-file-excel red"></span></td>
+                <td>Invalid</td>
+            </tr>
+            </tbody>
+        </table>
+    </td>
+</tr>
+
+<tr id="sidebar_IconKey_closed" style="display: none">
+    <td class="sidebar_tab">
+        <a href="javascript:leftnavExpand('sidebar_IconKey_open'); leftnavExpand('sidebar_IconKey_closed');"><span
+                class="icon icon-caret-right gray"></span></a>
+        Icon Key
+    </td>
+</tr>
+
+<script>
+    $(function () {
+        $('#sidebar_Info_closed').css('display', 'none');
+        $('#sidebar_Info_open').removeAttr('style');
+
+        $('#sidebar_Links_closed').css('display', 'none');
+        $('#sidebar_Links_open').removeAttr('style');
+    });
+</script>
+
 <jsp:include page="include/sideInfo.jsp"/>
+
 <link rel="stylesheet" href="../includes/jmesa/jmesa.css" type="text/css">
 <script type="text/JavaScript" language="JavaScript"
         src="${pageContext.request.contextPath}/includes/jmesa/jquery.min.js"></script>
@@ -348,6 +425,7 @@
 <script>
     var itemsTable = jQuery('#sdv-items').DataTable({
         dom: 't',
+        paging: false,
         columns: [
             {data: 'briefDescriptionItemName'},
             {data: 'value'},
@@ -358,6 +436,25 @@
             {data: 'actions'}
         ]
     });
+
+    function clearFilter() {
+        jQuery('#sdv-items').dataTable().fnSortNeutral();
+    }
+
+    clearFilter();
+
+    function translate(str) {
+        var trans = {
+            'VERIFIED': 'Verified',
+            'NOT_VERIFIED': 'Ready to verify',
+            'CHANGED_AFTER_VERIFIED': 'Changed since verified',
+            '100percent_required': '100% Required',
+            'partial_required': 'Partial Required',
+            'not_required': 'Not Required',
+            'not_applicable': 'N/A'
+        };
+        return trans[str] || str;
+    }
 
     function clearFilter() {
         jQuery('#sdv-items').dataTable().fnSortNeutral();
@@ -400,7 +497,7 @@
                 $('#siteName').text(data.siteName);
                 $('#eventStartDate').text(formatDate(data.eventStartDate));
                 $('#formStatus').text(data.formStatus);
-                $('#sdvStatus').text(data.sdvStatus);
+                $('#sdvStatus').text(translate(data.sdvStatus));
 
                 itemsTable.rows.add(data.sdvItems.map(function (item) {
                     item.briefDescriptionItemName = item.briefDescription + ' (' + item.name + ')';
@@ -433,6 +530,13 @@
         }
 
         $('#sdv-show-type').off('change');
+        if (data.sdvStatus === 'CHANGED_AFTER_VERIFIED') {
+            $('#sdv-show-type input[value=y]').click();
+        } else {
+            $('#sdv-show-type input[value=n]').click();
+        }
+
+        $('#sdv-show-type').off('change');
         if (data.sdvStatus === 'VERIFIED') {
             $('#sdv-show-type input[value=n]').click();
         } else {
@@ -458,4 +562,17 @@
             $('input[value="n"]').click()
         })
     });
+
+    var sdvTableHeaders = $('#sdv > thead').children();
+    var sdvtColumnTitles = sdvTableHeaders.filter('.header').children();
+    var sdvtFilterBoxes = sdvTableHeaders.filter('.filter').children();
+
+    function limitFilterWidth(width, columnTitle) {
+        var colIndex = sdvtColumnTitles.find(':contains(' + columnTitle + ')').closest('td').index();
+        var theFilterBox = sdvtFilterBoxes.eq(colIndex).children();
+        theFilterBox.wrapInner('<div style="width:' + width + '; overflow:hidden; text-overflow:ellipsis;">');
+    }
+
+    limitFilterWidth('110px', 'SDV Status');
+    limitFilterWidth('110px', 'SDV Requirement');
 </script>
