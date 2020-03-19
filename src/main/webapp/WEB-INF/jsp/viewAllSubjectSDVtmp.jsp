@@ -548,5 +548,4 @@
 
     limitFilterWidth('110px', 'SDV Status');
     limitFilterWidth('110px', 'SDV Requirement');
-
 </script>
