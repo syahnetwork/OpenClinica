@@ -205,6 +205,7 @@
         formObj.crfId.value = crfId;
         formObj.submit();
     }
+
 </script>
 <div id="subjectSDV">
     <form name='sdvForm' action="${pageContext.request.contextPath}/pages/viewAllSubjectSDVtmp">
@@ -281,6 +282,8 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css"/>
 <script type="text/JavaScript" language="JavaScript"
         src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<script type="text/JavaScript" language="JavaScript"
+        src="https://cdn.datatables.net/plug-ins/1.10.16/api/fnSortNeutral.js"></script>
 <script type="text/JavaScript" language="JavaScript"
         src="https://cdn.datatables.net/plug-ins/1.10.16/sorting/datetime-moment.js"></script>
 
@@ -422,6 +425,7 @@
 <script>
     var itemsTable = jQuery('#sdv-items').DataTable({
         dom: 't',
+        paging: false,
         columns: [
             {data: 'briefDescriptionItemName'},
             {data: 'value'},
@@ -434,7 +438,29 @@
     });
 
     function clearFilter() {
-        itemsTable.order([]);
+        jQuery('#sdv-items').dataTable().fnSortNeutral();
+    }
+
+    clearFilter();
+
+    function translate(str) {
+        var trans = {
+            'VERIFIED': 'Verified',
+            'NOT_VERIFIED': 'Ready to verify',
+            'CHANGED_AFTER_VERIFIED': 'Changed since verified',
+            '100percent_required': '100% Required',
+            'partial_required': 'Partial Required',
+            'not_required': 'Not Required',
+            'not_applicable': 'N/A'
+        };
+        return trans[str] || str;
+    }
+
+    function formatDate(date) {
+        date = moment(date);
+        if (date.hours === 0 && date.minutes === 0 && date.seconds === 0) {
+            return date.format('MM/DD/YYYY');
+        }
     }
 
     clearFilter();
@@ -446,18 +472,8 @@
         return trans[str] || str;
     }
 
-
-    function formatDate(date) {
-        date = moment(date);
-        if (date.hours === 0 && date.minutes === 0 && date.seconds === 0) {
-            return date.format('MM/DD/YYYY');
-        } else {
-            return date.format('MM/DD/YYYY hh:mm:ss');
-        }
-    }
-
-    function popupSdv(item) {
-        var data = $(item).data();
+    $('#sdv').on('click', '.popupSdv', function () {
+        var data = $(this).data();
         var url = 'auth/api/sdv/studies/' + data.studyOid + '/events/' + data.eventOid + '/occurrences/' + data.eventOrdinal + '/forms/' + data.formOid + '/participants/' + data.participantId + '/sdvItems';
 
         function getItems() {
@@ -475,11 +491,9 @@
                 $('#siteName').text(data.siteName);
                 $('#eventStartDate').text(formatDate(data.eventStartDate));
                 $('#formStatus').text(data.formStatus);
-                $('#sdvStatus').text(data.sdvStatus);
+                $('#sdvStatus').text(translate(data.sdvStatus));
 
                 itemsTable.rows.add(data.sdvItems.map(function (item) {
-                    console.log(item);
-
                     item.briefDescriptionItemName = item.briefDescription + ' (' + item.name + ')';
                     if (item.repeatingGroup) {
                         item.briefDescriptionItemName += ' ' + item.ordinal;
@@ -495,9 +509,14 @@
                         item.lastVerifiedDate = formatDate(item.lastVerifiedDate);
                     }
                     item.lastModifiedDate = formatDate(item.lastModifiedDate);
-
                     item.lastModifiedBy = item.lastModifiedUserFirstName + ' ' + item.lastModifiedUserLastName + ' (' + item.lastModifiedUserName + ')';
-                    item.actions = '<a href="#" title="View Form" class="icon icon-view-within"></a>';
+
+                    item.actions =
+                        '<a title="View Form" class="icon icon-view-within" href="../ResolveDiscrepancy?itemDataId=' +
+                        item.itemDataId +
+                        '"></a>';
+
+                    console.log(item);
                     return item;
                 }));
                 itemsTable.draw();
@@ -505,10 +524,10 @@
         }
 
         $('#sdv-show-type').off('change');
-        if (data.sdvStatus === 'VERIFIED') {
-            $('#sdv-show-type input[value=n]').click();
-        } else {
+        if (data.sdvStatus === 'CHANGED_AFTER_VERIFIED') {
             $('#sdv-show-type input[value=y]').click();
+        } else {
+            $('#sdv-show-type input[value=n]').click();
         }
 
         $('#sdv-show-type').change(function () {
@@ -516,12 +535,24 @@
             getItems();
         }).change();
 
-        var verifyButton = $(item).siblings()[3];
+        var verifyButton = $(this).siblings()[3];
         $('#sdvVerify').off('click').click(function () {
             $(verifyButton).click();
         });
 
         jQuery.blockUI({message: jQuery('#itemsdv'), css: {cursor: 'default', left: '75px', top: '100px'}});
+    });
+
+    var sdvTableHeaders = $('#sdv > thead').children();
+    var sdvtColumnTitles = sdvTableHeaders.filter('.header').children();
+    var sdvtFilterBoxes = sdvTableHeaders.filter('.filter').children();
+
+    function limitFilterWidth(width, columnTitle) {
+        var colIndex = sdvtColumnTitles.find(':contains(' + columnTitle + ')').closest('td').index();
+        var theFilterBox = sdvtFilterBoxes.eq(colIndex).children();
+        theFilterBox.wrapInner('<div style="width:' + width + '; overflow:hidden; text-overflow:ellipsis;">');
     }
 
+    limitFilterWidth('110px', 'SDV Status');
+    limitFilterWidth('110px', 'SDV Requirement');
 </script>
