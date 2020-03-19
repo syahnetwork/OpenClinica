@@ -456,9 +456,6 @@
         return trans[str] || str;
     }
 
-    >>>>>>>
-    master
-
     function clearFilter() {
         jQuery('#sdv-items').dataTable().fnSortNeutral();
     }
@@ -479,8 +476,6 @@
         } else {
             return date.format('MM/DD/YYYY hh:mm:ss');
         }
-    <<<<<<<
-        HEAD
     }
 
     jQuery('#sdv').on('click', '.popupSdv', function () {
@@ -497,12 +492,12 @@
                 } else {
                     jQuery('#eventName').text(data.eventName);
                 }
-                jQuery('#formName').text(data.formName);
-                jQuery('#sdvRequirement').text(translate(data.sdvRequirement));
-                jQuery('#siteName').text(data.siteName);
-                jQuery('#eventStartDate').text(formatDate(data.eventStartDate));
-                jQuery('#formStatus').text(data.formStatus);
-                jQuery('#sdvStatus').text(data.sdvStatus);
+                $('#formName').text(data.formName);
+                $('#sdvRequirement').text(translate(data.sdvRequirement));
+                $('#siteName').text(data.siteName);
+                $('#eventStartDate').text(formatDate(data.eventStartDate));
+                $('#formStatus').text(data.formStatus);
+                $('#sdvStatus').text(translate(data.sdvStatus));
 
                 itemsTable.rows.add(data.sdvItems.map(function (item) {
                     item.briefDescriptionItemName = item.briefDescription + ' (' + item.name + ')';
@@ -534,86 +529,41 @@
             });
         }
 
-    ======
-        =
-            $('#formName').text(data.formName);
-        $('#sdvRequirement').text(translate(data.sdvRequirement));
-        $('#siteName').text(data.siteName);
-        $('#eventStartDate').text(formatDate(data.eventStartDate));
-        $('#formStatus').text(data.formStatus);
-        $('#sdvStatus').text(translate(data.sdvStatus));
+        $('#sdv-show-type').off('change');
+        if (data.sdvStatus === 'CHANGED_AFTER_VERIFIED') {
+            $('#sdv-show-type input[value=y]').click();
+        } else {
+            $('#sdv-show-type input[value=n]').click();
+        }
 
-        itemsTable.rows.add(data.sdvItems.map(function (item) {
-            item.briefDescriptionItemName = item.briefDescription + ' (' + item.name + ')';
-            if (item.repeatingGroup) {
-                item.briefDescriptionItemName += ' ' + item.ordinal;
-            }
+        jQuery('#sdv-show-type').off('change');
+        if (data.sdvStatus === 'VERIFIED') {
+            jQuery('#sdv-show-type input[value=n]').click();
+        } else {
+            jQuery('#sdv-show-type input[value=y]').click();
+        }
 
-            item.lastVerifiedDate = data.lastVerifiedDate;
-            if (item.lastVerifiedDate != null && item.lastModifiedDate > item.lastVerifiedDate) {
-                item.value += '&nbsp; <img src="../images/changed_since_verified.png" width="16">';
-            }
-            if (!item.lastVerifiedDate) {
-                item.lastVerifiedDate = 'Never';
-            } else {
-                item.lastVerifiedDate = formatDate(item.lastVerifiedDate);
-            }
-            item.lastModifiedDate = formatDate(item.lastModifiedDate);
-            item.lastModifiedBy = item.lastModifiedUserFirstName + ' ' + item.lastModifiedUserLastName + ' (' + item.lastModifiedUserName + ')';
+        jQuery('#sdv-show-type').change(function () {
+            itemsTable.clear().draw();
+            getItems();
+        }).change();
 
-            item.actions =
-                '<a title="View Form" class="icon icon-view-within" href="../ResolveDiscrepancy?itemDataId=' +
-                item.itemDataId +
-                '"></a>';
+        var verifyButton = jQuery(this).siblings()[3];
+        jQuery('#sdvVerify').off('click').click(function () {
+            jQuery(verifyButton).click();
+        });
 
-            console.log(item);
-            return item;
-        }));
-        itemsTable.draw();
-    });
-    }
+        jQuery.blockUI({
+            message: jQuery('#itemsdv'),
+            css: {cursor: 'default', left: '75px', top: '100px', height: '80%', overflowY: 'auto', overflowX: 'hidden'}
+        });
 
-    $('#sdv-show-type').off('change');
-    if (data.sdvStatus === 'CHANGED_AFTER_VERIFIED') {
-        $('#sdv-show-type input[value=y]').click();
-    } else {
-        $('#sdv-show-type input[value=n]').click();
-    }
-    >>>>>>>
-    master
-
-    jQuery('#sdv-show-type').off('change');
-    if (data.sdvStatus === 'VERIFIED') {
-        jQuery('#sdv-show-type input[value=n]').click();
-    } else {
-        jQuery('#sdv-show-type input[value=y]').click();
-    }
-
-    jQuery('#sdv-show-type').change(function () {
-        itemsTable.clear().draw();
-        getItems();
-    }).change();
-
-    var verifyButton = jQuery(this).siblings()[3];
-    jQuery('#sdvVerify').off('click').click(function () {
-        jQuery(verifyButton).click();
+        jQuery(function () {
+            jQuery('input[value="n"]').click()
+        })
+        return false;
     });
 
-    jQuery.blockUI({
-        message: jQuery('#itemsdv'),
-        css: {cursor: 'default', left: '75px', top: '100px', height: '80%', overflowY: 'auto', overflowX: 'hidden'}
-    });
-
-    jQuery(function () {
-        jQuery('input[value="n"]').click()
-    })
-
-    << < < < < < HEAD
-    return false;
-    })
-    ;
-    ======
-    =
     var sdvTableHeaders = $('#sdv > thead').children();
     var sdvtColumnTitles = sdvTableHeaders.filter('.header').children();
     var sdvtFilterBoxes = sdvTableHeaders.filter('.filter').children();
@@ -626,7 +576,4 @@
 
     limitFilterWidth('110px', 'SDV Status');
     limitFilterWidth('110px', 'SDV Requirement');
-
-    >>>>>>>
-    master
 </script>
