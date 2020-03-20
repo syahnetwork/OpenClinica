@@ -11,7 +11,7 @@
 
 <!-- Sidebar Contents after alert-->
 <%--<c:set var="imagePathPrefix" value="${imagePathPrefix}" />--%>
-	
+
 <c:choose>
  <c:when test="${userBean != null && userBean.id>0}">
  <%-- BWP 3098 >> switch displays for Info box--%>
@@ -62,14 +62,14 @@
 
            objLeftNavRowElement = MM_findObj(strLeftNavRowElementName);
            if (objLeftNavRowElement != null) {
-             if (objLeftNavRowElement.style) { objLeftNavRowElement = objLeftNavRowElement.style; } 
-	           objLeftNavRowElement.display = (objLeftNavRowElement.display == "none" ) ? "" : "none";		
+             if (objLeftNavRowElement.style) { objLeftNavRowElement = objLeftNavRowElement.style; }
+	           objLeftNavRowElement.display = (objLeftNavRowElement.display == "none" ) ? "" : "none";
 	         }
            }
 
        //-->
-     </script>  
-     
+     </script>
+
    	</div>
 
 		</td>
@@ -117,23 +117,27 @@
     <c:if test="${iconInfoShown || (!panel.iconInfoShown && panel.manageSubject) || closeInfoShowIcons}">
         <c:import url="/WEB-INF/jsp/include/sideIconsSubject.jsp"/>
     </c:if>
-	
-  </table>         
-  <c:choose> 
+
+	 <c:if test="${iconInfoShownSDV}">
+		 <c:import url="/WEB-INF/jsp/include/sideIcons.jsp"/>
+	 </c:if>
+
+  </table>
+  <c:choose>
   <c:when test="${panel.createDataset}">
      <c:import url="/WEB-INF/jsp/include/createDatasetSide.jsp"/>
   </c:when>
   <c:when test="${panel.extractData}">
-     
+
 	<c:if test="${panel.orderedData}">
 	   <c:set var="count" value="0"/>
 	   <c:set var="newEvent" value="0"/>
-	   <c:set var="eventCount" value="0"/>		 
+	   <c:set var="eventCount" value="0"/>
 	   <c:forEach var='line' items="${panel.userOrderedData}">
 			<c:if test="${line.colon}">
 			 <c:choose>
 			 <c:when test="${line.title=='Study Event Definition'}">
-			  
+
 			  <c:if test="${count >0 && eventCount>0}">
 			      </table>
 	             </td>
@@ -146,20 +150,20 @@
 			  <c:set var="newEvent" value="1"/>
 			  <c:set var="eventCount" value="${eventCount+1}"/>
 			  <tr>
-	           <td valign="top" width="10" class="leftmenu"><a href="javascript:leftnavExpand('leftnavSubRow_SubSection<c:out value="${eventCount}"/>'); 
+	           <td valign="top" width="10" class="leftmenu"><a href="javascript:leftnavExpand('leftnavSubRow_SubSection<c:out value="${eventCount}"/>');
 		          javascript:setImage('ExpandGroup<c:out value="${eventCount}"/>','${pageContext.request.contextPath}/images/bt_Collapse.gif');"><img
 		          name="ExpandGroup<c:out value="${eventCount}"/>" src="${pageContext.request.contextPath}/images/bt_Expand.gif" border="0"></a></td>
-	              <td valign="top" class="leftmenu"><a href="javascript:leftnavExpand('leftnavSubRow_SubSection<c:out value="${eventCount}"/>'); 
+	              <td valign="top" class="leftmenu"><a href="javascript:leftnavExpand('leftnavSubRow_SubSection<c:out value="${eventCount}"/>');
 		            javascript:setImage('ExpandGroup<c:out value="${eventCount}"/>','${pageContext.request.contextPath}/images/bt_Collapse.gif');"><b><c:out value="${line.info}" escapeXml="false"/></b></a>
 		       </td>
-             </tr>  
+             </tr>
              </c:when>
              <c:otherwise>
                <b><c:out value="${line.title}" escapeXml="false"/>: <c:out value="${line.info}" escapeXml="false"/></b>
-                <br/>             
+                <br/>
                 <br/>
              </c:otherwise>
-             </c:choose>           
+             </c:choose>
              </c:if>
              <c:if test="${!line.colon}">
                <c:if test="${newEvent==1}">
@@ -171,38 +175,38 @@
                 <c:set var="count" value="${count+1}"/>
                 <tr>
                  <c:choose>
-                   <c:when test="${line.lastCRF}">                  
+                   <c:when test="${line.lastCRF}">
 		             <td valign="top" class="vline_B">
 		           </c:when>
 		           <c:otherwise>
 		             <td valign="top" class="vline">
-		          </c:otherwise> 
+		          </c:otherwise>
 		         </c:choose>
 		         <img src="images/leftbar_hline.gif"></td>
 		         <td valign="top" class="leftmenu" style="font-size:11px; color:#789EC5"><c:out value="${line.info}" escapeXml="false"/></td>
 	           </tr>
              </c:if>
-			  
+
 		  </c:forEach>
 		   <c:if test="${count>0}">
 		     </table>
 	         </td>
             </tr>
-		  </table>  
+		  </table>
 		  </c:if>
 	</c:if>
-  
+
   </c:when>
-  
-  <c:when test="${panel.submitDataModule}">      
+
+  <c:when test="${panel.submitDataModule}">
      <c:import url="/WEB-INF/jsp/include/submitDataSide.jsp"/>
-  </c:when> 
-	
-  </c:choose>	
+  </c:when>
+
+  </c:choose>
 </c:when>
 <c:otherwise>
     <br><br>
-	<a href="MainMenu"><fmt:message key="login" bundle="${resword}"/></a>	
+	<a href="MainMenu"><fmt:message key="login" bundle="${resword}"/></a>
 	<br><br>
 	<a href="RequestAccount"><fmt:message key="request_an_account" bundle="${resword}"/></a>
 	<br><br>
