@@ -198,7 +198,7 @@ public class SDVController {
         StudyInfoPanel panel = new StudyInfoPanel();
         panel.reset();
         request.getSession().setAttribute("panel", panel);
-        request.setAttribute("iconInfoShownSDV",true);//adam
+        request.setAttribute("iconInfoShownSDV", true);//adam
 
 
         ModelMap gridMap = new ModelMap();
