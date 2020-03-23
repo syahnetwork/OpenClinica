@@ -1398,7 +1398,7 @@ public class SDVUtil {
 
         // If no event CRFs are offered to SDV, then the transaction has not
         // caused a problem, so return true
-        if (eventCRFIds == null || eventCRFIds.isEmpty()) {
+        if (eventCRFIds == null || eventCRFIds.isEmpty()) {//already set to true, sdv status should be changed to verified, adam , keyword sdvstatus
             return true;
         }
 
