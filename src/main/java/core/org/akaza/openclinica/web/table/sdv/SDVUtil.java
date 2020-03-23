@@ -1379,7 +1379,7 @@ public class SDVUtil {
                             crfBean.getId());
                 }
                 if (eventDefinitionCrf.getSourceDataVerification() == SourceDataVerification.AllREQUIRED
-                        || eventDefinitionCrf.getSourceDataVerification() == SourceDataVerification.PARTIALREQUIRED) {
+                        || eventDefinitionCrf.getSourceDataVerification() == SourceDataVerification.PARTIALREQUIRED) {//adam
                     try {
                         eventCrfDao.updateSdvStatus(sdvStatus, userId, eventCRFBean.getId());
                     } catch (Exception exc) {
