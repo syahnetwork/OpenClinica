@@ -436,7 +436,7 @@
                 $('#formStatus').text(data.formStatus);
                 $('#sdvStatus').text(translate(data.sdvStatus));
 
-                data.sdvItems.sort(function(a, b) {
+                data.sdvItems.sort(function (a, b) {
                     return a.itemId - b.itemId;
                 });
                 itemsTable.rows.add(data.sdvItems.map(function (item) {
@@ -465,8 +465,8 @@
                     return item;
                 }));
                 itemsTable.draw();
-                
-                setTimeout(function() {
+
+                setTimeout(function () {
                     var deltaWidth = $(document).width() - $('#itemsdv').width();
                     var marginX = (deltaWidth / 2) + 'px';
                     $('#itemsdv').parents().css({
