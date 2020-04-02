@@ -663,11 +663,8 @@ public class SDVUtil {
 
         tableFacade.addFilterMatcher(new MatcherKey(String.class, "openQueries"), new OpenQueriesMatcher());
 
-<<<<<<< HEAD
-=======
         tableFacade.addFilterMatcher(new MatcherKey(String.class, "crfName"), new OpenQueriesMatcher());
 
->>>>>>> master
         this.setDataAndLimitVariables(tableFacade, studyId, request, permissionTags);
 
         // tableFacade.setItems(items);
@@ -704,21 +701,11 @@ public class SDVUtil {
         setHtmlCellEditors(tableFacade, allColumns, true);
 
         // temporarily disable some of the filters for now
-<<<<<<< HEAD
-        turnOffFilters(tableFacade, new String[]{"studySubjectStatus", "crfName", "crfVersion", "lastUpdatedDate",
-=======
-        turnOffFilters(tableFacade, new String[]{"studySubjectStatus", "crfVersion", "lastUpdatedDate",
->>>>>>> master
-                "lastUpdatedBy", "eventDate"});
+
+        turnOffFilters(tableFacade, new String[]{"studySubjectStatus", "crfVersion", "lastUpdatedDate", "lastUpdatedBy", "eventDate"});
 
         turnOffSorts(tableFacade,
-                new String[]{"sdvStatus", "studySubjectId", "studyIdentifier", "openQueries", "eventName",
-<<<<<<< HEAD
-                        "studySubjectStatus", "crfName", "crfVersion", "sdvRequirementDefinition", "crfStatus", "lastUpdatedBy", "subjectEventStatus",
-=======
-                        "studySubjectStatus", "crfVersion", "sdvRequirementDefinition", "crfStatus", "lastUpdatedBy", "subjectEventStatus",
->>>>>>> master
-                        "sdvStatusActions"});
+                new String[]{"sdvStatus", "studySubjectId", "studyIdentifier", "openQueries", "eventName", "studySubjectStatus", "crfVersion", "sdvRequirementDefinition", "crfStatus", "lastUpdatedBy", "subjectEventStatus", "sdvStatusActions"});
 
         // Create the custom toolbar
         SDVToolbar sDVToolbar = new SDVToolbar(showMoreLink);
@@ -1086,17 +1073,6 @@ public class SDVUtil {
             StudyEvent event = eventCrf.getStudyEvent();
             StudyEventDefinition eventDef = event.getStudyEventDefinition();
             actionsBuilder
-<<<<<<< HEAD
-                    .append("<button style='padding:.4em 0.9em' class='accessCheck popupSdv' title='" + resWords.getString("view_sdv_item_data_hover") + "'")
-                    .append(" data-participant-id='").append(studySubjectBean.getLabel()).append("'")
-                    .append(" data-study-oid='").append(event.getStudy().getOc_oid()).append("'")
-                    .append(" data-event-oid='").append(event.getOc_oid()).append("'")
-                    .append(" data-event-ordinal='").append(event.getOrdinal() > 0 ? event.getOrdinal() : 1).append("'")
-                    .append(" data-form-oid='").append(eventCrf.getFormLayout().getCrf().getOcOid()).append("'")
-                    .append(" data-sdv-status='").append(eventCRFBean.getSdvStatus()).append("'")
-                    .append(">" + resWords.getString("sdv_item_data") + "</button>");
-
-=======
                 .append("<button style='padding:.4em 0.9em' class='accessCheck popupSdv' title='" + resWords.getString("view_sdv_item_data_hover") + "'")
                 .append(" data-participant-id='").append(studySubjectBean.getLabel()).append("'")
                 .append(" data-study-oid='").append(eventDef.getStudy().getOc_oid()).append("'")
@@ -1105,8 +1081,7 @@ public class SDVUtil {
                 .append(" data-form-oid='").append(eventCrf.getFormLayout().getCrf().getOcOid()).append("'")
                 .append(" data-sdv-status='").append(eventCRFBean.getSdvStatus()).append("'")
                 .append(">" + resWords.getString("sdv_item_data") + "</button>");
-        
->>>>>>> master
+
             if (eventCRFBean.getSdvStatus() != SdvStatus.VERIFIED) {
                 // StringBuilder jsCodeString =
                 // new StringBuilder("this.form.method='GET';
