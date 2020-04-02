@@ -326,12 +326,8 @@ public class SDVUtil {
 
     @SuppressWarnings("unchecked")
     private Collection<SubjectSDVContainer> getFilteredItems(EventCRFSDVFilter filterSet, EventCRFSDVSort sortSet, int rowStart, int rowEnd, int studyId,
-<<<<<<< HEAD
-                                                             HttpServletRequest request , String[] permissionTags) {
-=======
-                                                             HttpServletRequest request, String[] permissionTags) {
->>>>>>> master
 
+                                                             HttpServletRequest request, String[] permissionTags) {
         EventCRFDAO eventCRFDAO = new EventCRFDAO(dataSource);
         List<EventCRFBean> eventCRFBeans = new ArrayList<EventCRFBean>();
         /*
@@ -705,15 +701,6 @@ public class SDVUtil {
         setHtmlCellEditors(tableFacade, allColumns, true);
 
         // temporarily disable some of the filters for now
-<<<<<<< HEAD
-        turnOffFilters(tableFacade, new String[] { "studySubjectStatus", "crfVersion", "lastUpdatedDate",
-                "lastUpdatedBy", "eventDate" });
-
-        turnOffSorts(tableFacade,
-                new String[] { "sdvStatus", "studySubjectId", "studyIdentifier", "openQueries", "eventName",
-                        "studySubjectStatus", "crfVersion", "sdvRequirementDefinition", "crfStatus", "lastUpdatedBy", "subjectEventStatus",
-                        "sdvStatusActions" });
-=======
         turnOffFilters(tableFacade, new String[]{"studySubjectStatus", "crfVersion", "lastUpdatedDate",
                 "lastUpdatedBy", "eventDate"});
 
@@ -721,7 +708,6 @@ public class SDVUtil {
                 new String[]{"sdvStatus", "studySubjectId", "studyIdentifier", "openQueries", "eventName",
                         "studySubjectStatus", "crfVersion", "sdvRequirementDefinition", "crfStatus", "lastUpdatedBy", "subjectEventStatus",
                         "sdvStatusActions"});
->>>>>>> master
 
         // Create the custom toolbar
         SDVToolbar sDVToolbar = new SDVToolbar(showMoreLink);
@@ -1074,7 +1060,7 @@ public class SDVUtil {
                 queryString = "";
             }
             StringBuilder actionsBuilder = new StringBuilder(new HtmlBuilder().toString());
-<<<<<<< HEAD
+
             StudyEventDefinition event = eventCrf.getStudyEvent().getStudyEventDefinition();
             actionsBuilder
                     .append("<a title='" + resWords.getString("view_sdv_item_data_hover") + "' alt='" + resWords.getString("view_sdv_item_data_hover") + "' class='icon icon-sdv-item-form black' accessCheck' border='0' style='margin-right: 5px;' onclick='popupSdv(this)'")
@@ -1085,8 +1071,7 @@ public class SDVUtil {
                     .append(" data-form-oid='").append(eventCrf.getFormLayout().getCrf().getOcOid()).append("'")
                     .append(" data-sdv-status='").append(eventCRFBean.getSdvStatus()).append("'")
                     .append("/>");
-=======
->>>>>>> master
+
             if (eventCRFBean.getStatus() != null){
                 String queryStringEncoded = queryString;
                 try {
@@ -1095,11 +1080,8 @@ public class SDVUtil {
                     logger.error("Unsupported encoding");
                 }
                 Integer status = eventCRFBean.getStage().getId();
-<<<<<<< HEAD
-                actionsBuilder.append(getCRFViewIconPath( status, request, eventCRFBean.getId(), eventCRFBean.getFormLayoutId(),
-=======
+
                 actionsBuilder.append(getCRFViewIconPath(status, request, eventCRFBean.getId(), eventCRFBean.getFormLayoutId(),
->>>>>>> master
                         eventCRFBean.getStudyEventId(), queryStringEncoded));
             }
 
@@ -1542,11 +1524,8 @@ public class SDVUtil {
                     sdvItemDTO.setOpenQueriesCount(discrepancyNoteDao.findNewOrUpdatedParentQueriesByItemData(itemData.getItemDataId(), 3).size());
                     sdvItemDTO.setOrdinal(itemData.getOrdinal());
                     ItemGroupMetadata itemGroupMetadata = itemGroupMetadataDao.findByItemId(itemData.getItem().getItemId());
-<<<<<<< HEAD
-                    if(itemGroupMetadata != null )
-=======
+
                     if (itemGroupMetadata != null)
->>>>>>> master
                         sdvItemDTO.setRepeatingGroup(itemGroupMetadata.isRepeatingGroup());
                     sdvItemDTO.setValue(itemData.getValue());
                     if (itemData.getDateUpdated() != null)
