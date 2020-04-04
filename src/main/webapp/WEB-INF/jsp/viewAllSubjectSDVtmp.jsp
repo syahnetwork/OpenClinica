@@ -449,9 +449,20 @@
                 $('#formStatus').text(data.formStatus);
                 $('#sdvStatus').text(translate(data.sdvStatus));
 
-                data.sdvItems.sort(function(a, b) {
-                    return a.itemId - b.itemId;
+                // data.sdvItems.sort(function (a, b) {
+                //     return a.itemId - b.itemId;
+                // });
+
+                data.sdvItems.sort(function (a, b) {
+                    if (a.name > b.name) {
+                        return 1;
+                    }
+                    if (a.name < b.name) {
+                        return -1;
+                    }
+                    return 0;
                 });
+
                 itemsTable.rows.add(data.sdvItems.map(function (item) {
                     item.descName = (item.briefDescription || item.label || '') + ' (' + item.name + ')';
                     if (item.repeatingGroup) {
@@ -478,7 +489,7 @@
                     return item;
                 }));
                 itemsTable.draw();
-                
+
                 setTimeout(setPopupPos, 1);
             });
         }
