@@ -1,11 +1,15 @@
 package org.akaza.openclinica.controller;
 
+import core.org.akaza.openclinica.bean.login.ErrorMessage;
 import core.org.akaza.openclinica.bean.login.UserAccountBean;
 import core.org.akaza.openclinica.exception.OpenClinicaSystemException;
+import core.org.akaza.openclinica.service.PermissionService;
 import core.org.akaza.openclinica.service.StudyBuildService;
 import core.org.akaza.openclinica.service.UtilService;
+import core.org.akaza.openclinica.web.InsufficientPermissionException;
 import core.org.akaza.openclinica.web.table.sdv.SDVUtil;
 import io.swagger.annotations.Api;
+import org.akaza.openclinica.control.core.SecureController;
 import org.akaza.openclinica.controller.dto.SdvDTO;
 import org.akaza.openclinica.service.ValidateService;
 import org.akaza.openclinica.web.restful.errors.ErrorConstants;
@@ -24,7 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 @Api(value = "SDV", tags = { "SDV" }, description = "REST API for SDV Controller")
 @RequestMapping(value ="/auth/api/sdv")
-public class SdvApiController {
+public class SdvApiController extends SecureController {
 
     @Autowired
     private StudyBuildService studyBuildService;
@@ -39,6 +43,9 @@ public class SdvApiController {
     @Autowired
     UtilService utilService;
 
+    @Autowired
+    PermissionService permissionService;
+
         @RequestMapping(value = "studies/{studyOid}/events/{StudyEventOid}/occurrences/{Ordinal}/forms/{FormOid}/participants/{ParticipantId}/sdvItems", method = RequestMethod.GET)
     public ResponseEntity<Object> viewFormDetailsForSDV(HttpServletRequest request,
                                                         @PathVariable("studyOid") String studyOID,
@@ -51,6 +58,9 @@ public class SdvApiController {
             UserAccountBean userAccountBean = utilService.getUserAccountFromRequest(request);
         boolean changedAfterSdvOnlyFilterFlag=true;
         int ordinalValue ;
+
+        if(permissionService.getPermissionTagsList(request).isEmpty())
+            throw new OpenClinicaSystemException( ErrorConstants.ERR_VALIDATION);
 
         if(changedAfterSdvOnlyFilter.equals("n"))
             changedAfterSdvOnlyFilterFlag = false;
@@ -72,4 +82,13 @@ public class SdvApiController {
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
+    @Override
+    protected void processRequest() throws Exception {
+
+    }
+
+    @Override
+    protected void mayProceed() throws InsufficientPermissionException {
+
+    }
 }
