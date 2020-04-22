@@ -13,6 +13,7 @@ $(document).ready(function() {
                     onclick.call(this, event || window.event);
                 }
             } else {
+                window.location.reload();
                 alert("You don't have permission to perform this action. Please contact your administrator if you think you have received this message in error.");
             }
         });

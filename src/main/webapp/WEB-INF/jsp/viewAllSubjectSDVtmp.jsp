@@ -6,6 +6,7 @@
 <fmt:setBundle basename="org.akaza.openclinica.i18n.format" var="resformat"/>
 <fmt:setBundle basename="org.akaza.openclinica.i18n.notes" var="restext"/>
 <fmt:setBundle basename="org.akaza.openclinica.i18n.page_messages" var="resmessages"/>
+<script type="text/javascript" language="JavaScript" src="includes/permissionTagAccess.js"></script>
 
 <jsp:include page="include/managestudy_top_pages.jsp"/>
 
@@ -303,6 +304,14 @@
         margin: 5px 10px;
     }
 
+    .text-left {
+        text-align: left;
+    }
+
+    .text-right {
+        text-align: right;
+    }
+
     .blockOverlay {
         cursor: default !important;
     }
@@ -386,7 +395,14 @@
             {data: 'lastModifiedDate'},
             {data: 'lastModifiedBy'},
             {data: 'actions'}
-        ]
+        ],
+        columnDefs: [{
+            targets: 0,
+            className: 'text-left'
+        }, {
+            targets: 1,
+            className: 'text-right'
+        }]
     });
 
     function clearFilter() {
@@ -483,7 +499,7 @@
                         item.lastVerifiedDate = formatDateTime(item.lastVerifiedDate);
                     }
                     item.lastModifiedDate = formatDateTime(item.lastModifiedDate);
-                    item.lastModifiedBy = item.lastModifiedUserFirstName + ' ' + item.lastModifiedUserLastName + ' (' + item.lastModifiedUserName + ')';
+                    item.lastModifiedBy = item.lastModifiedUserFirstName + ' ' + item.lastModifiedUserLastName;
 
                     item.actions =
                         '<a title="View Form" class="icon icon-view-within" href="../ResolveDiscrepancy' +
