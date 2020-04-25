@@ -221,6 +221,7 @@
 <script type="text/JavaScript" language="JavaScript"
         src="https://cdn.datatables.net/plug-ins/1.10.16/sorting/datetime-moment.js"></script>
 
+
 <style>
     #participantId {
         width: 300px;
@@ -303,6 +304,12 @@
         margin: 5px 10px;
     }
 
+    .site-filter {
+        position: relative;
+        margin-right: 70%;
+        margin-top: 0.5%
+    }
+
     .text-left {
         text-align: left;
     }
@@ -364,6 +371,22 @@
     </fieldset>
 
     <a id="clear-filter" href="javascript:clearFilter()">Clear Filter</a>
+
+    <div class="site-filter"><label for="site-filter">Show Calculated Values</label>
+        <label for=""><input type="checkbox" onclick="siteFilter()" id="site-filter" name="site-filter"></label></div>
+
+    <script>function siteFilter() {
+        $('input[id="site-filter"]').change(function () {
+            if (this.checked) {
+                $('#sdv-items').parents('div#sdv-items_wrapper').first().hide()
+            } else {
+                $('#sdv-items').parents('div#sdv-items_wrapper').first().show()
+            }
+        })
+    }
+    </script>
+
+
     <table id='sdv-items' style="width:100%">
         <thead>
         <tr>
@@ -431,11 +454,9 @@
         var winWidth = $(window).width();
         if (winWidth < 900) {
             return '0';
-        }
-        else if (winWidth > 1000) {
+        } else if (winWidth > 1000) {
             return '50px';
-        }
-        else {
+        } else {
             var deltaWidth = winWidth - 900;
             var marginX = (deltaWidth / 2) + 'px';
             return marginX;
@@ -451,8 +472,7 @@
         var maxHeight = $(window).height() - $('#sdv-items_wrapper').position().top - 130;
         if ($('#sdv-items').height() > maxHeight) {
             $('#sdv-items_wrapper').css('height', maxHeight + 'px');
-        }
-        else {
+        } else {
             $('#sdv-items_wrapper').css('height', $('#sdv-items').height() + 30 + 'px');
         }
     }
@@ -479,7 +499,7 @@
                 $('#formStatus').text(data.formStatus);
                 $('#sdvStatus').text(translate(data.sdvStatus));
 
-                data.sdvItems.sort(function(a, b) {
+                data.sdvItems.sort(function (a, b) {
                     return a.itemId - b.itemId;
                 });
                 itemsTable.rows.add(data.sdvItems.map(function (item) {
@@ -509,7 +529,7 @@
                     return item;
                 }));
                 itemsTable.draw();
-                
+
                 setTimeout(setPopupPos, 1);
             });
         }
@@ -560,8 +580,8 @@
 
     var popupIndex = new URLSearchParams(location.search).get('popupIndex');
     if (popupIndex) {
-        $(function() {
-            setTimeout(function() {
+        $(function () {
+            setTimeout(function () {
                 $('#sdv button.popupSdv').eq(popupIndex).click();
             }, 1);
         });
