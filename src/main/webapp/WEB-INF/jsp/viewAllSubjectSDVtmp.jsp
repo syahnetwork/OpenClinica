@@ -65,8 +65,8 @@
         src="${pageContext.request.contextPath}/includes/jmesa/jquery.blockUI.js"></script>
 <script type="text/javascript" language="JavaScript"
         src="${pageContext.request.contextPath}/includes/permissionTagAccess.js"></script>
-<script type="text/javascript" language="JavaScript"
-        src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.min.js"></script>
+<%--<script type="text/javascript" language="JavaScript"--%>
+<%--        src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.min.js"></script>--%>
 
 
 <%-- view all subjects starts here --%>
@@ -490,13 +490,8 @@
 
             validateResourceAccess(data.eventcrfid, data.formlayoutid, data.studyeventid).done(function (validate) {
                 if (validate.status == true) {
-                    console.log('adam = ' + validate.status)
                     $.get(url + '?changedAfterSdvOnlyFilter=' + sinceLastVerified, function (data) {
-
-                        console.log('adam ajax= ' + data.studyEventId)
-                        console.log('adam ajax= ' + data.formLayoutId)
-
-                        $('#participantId').text(data.participantId);
+                        $('#participantId')text(data.participantId);
                         if (data.repeatingEvent) {
                             $('#eventName').text(data.eventName + ' (' + data.eventOrdinal + ')');
                         } else {
