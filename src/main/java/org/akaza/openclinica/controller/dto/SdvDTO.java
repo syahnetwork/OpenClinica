@@ -14,7 +14,35 @@ public class SdvDTO {
     private String sdvStatus;
     private String formName;
     private String formStatus;
+    private Integer eventCRFId;
+    private Integer formLayoutId;
+    private Integer studyEventId;
     private Date lastVerifiedDate;
+
+    public Integer getEventCRFId() {
+        return eventCRFId;
+    }
+
+    public void setEventCRFId(Integer eventCRFId) {
+        this.eventCRFId = eventCRFId;
+    }
+
+    public Integer getFormLayoutId() {
+        return formLayoutId;
+    }
+
+    public void setFormLayoutId(Integer formLayoutId) {
+        this.formLayoutId = formLayoutId;
+    }
+
+    public Integer getStudyEventId() {
+        return studyEventId;
+    }
+
+    public void setStudyEventId(Integer studyEventId) {
+        this.studyEventId = studyEventId;
+    }
+
     private List<SdvItemDTO> sdvItems;
 
     public String getParticipantId() {
