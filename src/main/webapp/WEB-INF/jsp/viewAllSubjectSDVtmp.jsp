@@ -64,6 +64,8 @@
         src="${pageContext.request.contextPath}/includes/jmesa/jquery.blockUI.js"></script>
 <script type="text/javascript" language="JavaScript"
         src="${pageContext.request.contextPath}/includes/permissionTagAccess.js"></script>
+<script type="text/javascript" language="JavaScript"
+        src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.min.js"></script>
 
 
 <%-- view all subjects starts here --%>
@@ -88,10 +90,10 @@
         <c:if test="${(!study.status.pending)}">
             <fmt:message key="study_frozen_locked_note" bundle="${restext}"/>
         </c:if>
-        
+
         <c:if test="${(study.status.pending)}">
             <fmt:message key="study_design_note" bundle="${restext}"/>
-        </c:if>   
+        </c:if>
     </span><br>
     <div style="text-align:center; width:100%;">
         <button id="btn" onclick="hm('box');">OK</button>
@@ -221,6 +223,7 @@
 <script type="text/JavaScript" language="JavaScript"
         src="https://cdn.datatables.net/plug-ins/1.10.16/sorting/datetime-moment.js"></script>
 
+
 <style>
     #participantId {
         width: 300px;
@@ -303,6 +306,12 @@
         margin: 5px 10px;
     }
 
+    .site-filter {
+        position: relative;
+        margin-right: 70%;
+        margin-top: 0.5%
+    }
+
     .text-left {
         text-align: left;
     }
@@ -364,6 +373,22 @@
     </fieldset>
 
     <a id="clear-filter" href="javascript:clearFilter()">Clear Filter</a>
+
+    <div class="site-filter"><label for="site-filter">Show Calculated Values</label>
+        <label for=""><input type="checkbox" onclick="siteFilter()" id="site-filter" name="site-filter"></label></div>
+
+    <script>function siteFilter() {
+        $('input[id="site-filter"]').change(function () {
+            if (this.checked) {
+                $('#sdv-items').parents('div#sdv-items_wrapper').first().hide()
+            } else {
+                $('#sdv-items').parents('div#sdv-items_wrapper').first().show()
+            }
+        })
+    }
+    </script>
+
+
     <table id='sdv-items' style="width:100%">
         <thead>
         <tr>
@@ -431,11 +456,9 @@
         var winWidth = $(window).width();
         if (winWidth < 900) {
             return '0';
-        }
-        else if (winWidth > 1000) {
+        } else if (winWidth > 1000) {
             return '50px';
-        }
-        else {
+        } else {
             var deltaWidth = winWidth - 900;
             var marginX = (deltaWidth / 2) + 'px';
             return marginX;
@@ -451,8 +474,7 @@
         var maxHeight = $(window).height() - $('#sdv-items_wrapper').position().top - 130;
         if ($('#sdv-items').height() > maxHeight) {
             $('#sdv-items_wrapper').css('height', maxHeight + 'px');
-        }
-        else {
+        } else {
             $('#sdv-items_wrapper').css('height', $('#sdv-items').height() + 30 + 'px');
         }
     }
@@ -464,83 +486,98 @@
 
         function getItems() {
             var sinceLastVerified = $('#sdv-show-type input:checked').val();
-            $.get(url + '?changedAfterSdvOnlyFilter=' + sinceLastVerified, function (data) {
 
-                $('#participantId').text(data.participantId);
-                if (data.repeatingEvent) {
-                    $('#eventName').text(data.eventName + ' (' + data.eventOrdinal + ')');
+            validateResourceAccess(data.eventcrfid, data.formlayoutid, data.studyeventid).done(function (validate) {
+                if (validate.status == true) {
+                    console.log('adam = ' + validate.status)
+                    $.get(url + '?changedAfterSdvOnlyFilter=' + sinceLastVerified, function (data) {
+
+                        console.log('adam ajax= ' + data.studyEventId)
+                        console.log('adam ajax= ' + data.formLayoutId)
+
+                        $('#participantId').text(data.participantId);
+                        if (data.repeatingEvent) {
+                            $('#eventName').text(data.eventName + ' (' + data.eventOrdinal + ')');
+                        } else {
+                            $('#eventName').text(data.eventName);
+                        }
+                        $('#formName').text(data.formName);
+                        $('#sdvRequirement').text(translate(data.sdvRequirement));
+                        $('#siteName').text(data.siteName);
+                        $('#eventStartDate').text(data.eventStartDate);
+                        $('#formStatus').text(data.formStatus);
+                        $('#sdvStatus').text(translate(data.sdvStatus));
+
+                        data.sdvItems.sort(function (a, b) {
+                            return a.itemId - b.itemId;
+                        });
+                        itemsTable.rows.add(data.sdvItems.map(function (item) {
+                            item.descName = (item.briefDescription || item.label || '') + ' (' + item.name + ')';
+                            if (item.repeatingGroup) {
+                                item.descName += ' (' + item.ordinal + ')';
+                            }
+
+                            item.lastVerifiedDate = data.lastVerifiedDate;
+                            if (item.lastVerifiedDate != null && item.lastModifiedDate > item.lastVerifiedDate) {
+                                item.value += '&nbsp; <img src="../images/changed_since_verified.png" width="16">';
+                            }
+                            if (!item.lastVerifiedDate) {
+                                item.lastVerifiedDate = 'Never';
+                            } else {
+                                item.lastVerifiedDate = formatDateTime(item.lastVerifiedDate);
+                            }
+                            item.lastModifiedDate = formatDateTime(item.lastModifiedDate);
+                            item.lastModifiedBy = item.lastModifiedUserFirstName + ' ' + item.lastModifiedUserLastName;
+
+                            item.actions =
+                                '<a title="View Form" class="icon icon-view-within" href="../ResolveDiscrepancy' +
+                                '?itemDataId=' + item.itemDataId +
+                                '&popupIndex=' + popupIndex +
+                                '"></a>';
+
+                            return item;
+                        }));
+                        itemsTable.draw();
+
+                        setTimeout(setPopupPos, 1);
+                    });
                 } else {
-                    $('#eventName').text(data.eventName);
+                    alert("You don't have permission to perform this action. Please contact your administrator if you think you have received this message in error.");
                 }
-                $('#formName').text(data.formName);
-                $('#sdvRequirement').text(translate(data.sdvRequirement));
-                $('#siteName').text(data.siteName);
-                $('#eventStartDate').text(data.eventStartDate);
-                $('#formStatus').text(data.formStatus);
-                $('#sdvStatus').text(translate(data.sdvStatus));
+            })
 
-                data.sdvItems.sort(function(a, b) {
-                    return a.itemId - b.itemId;
-                });
-                itemsTable.rows.add(data.sdvItems.map(function (item) {
-                    item.descName = (item.briefDescription || item.label || '') + ' (' + item.name + ')';
-                    if (item.repeatingGroup) {
-                        item.descName += ' (' + item.ordinal + ')';
-                    }
 
-                    item.lastVerifiedDate = data.lastVerifiedDate;
-                    if (item.lastVerifiedDate != null && item.lastModifiedDate > item.lastVerifiedDate) {
-                        item.value += '&nbsp; <img src="../images/changed_since_verified.png" width="16">';
-                    }
-                    if (!item.lastVerifiedDate) {
-                        item.lastVerifiedDate = 'Never';
-                    } else {
-                        item.lastVerifiedDate = formatDateTime(item.lastVerifiedDate);
-                    }
-                    item.lastModifiedDate = formatDateTime(item.lastModifiedDate);
-                    item.lastModifiedBy = item.lastModifiedUserFirstName + ' ' + item.lastModifiedUserLastName;
-
-                    item.actions =
-                        '<a title="View Form" class="icon icon-view-within" href="../ResolveDiscrepancy' +
-                        '?itemDataId=' + item.itemDataId +
-                        '&popupIndex=' + popupIndex +
-                        '"></a>';
-
-                    return item;
-                }));
-                itemsTable.draw();
-                
-                setTimeout(setPopupPos, 1);
-            });
         }
+    }
 
-        $('#sdv-show-type').off('change');
-        if (data.sdvStatus === 'CHANGED_AFTER_VERIFIED') {
-            $('#sdv-show-type input[value=y]').click();
-        } else {
-            $('#sdv-show-type input[value=n]').click();
-        }
+    $('#sdv-show-type').off('change');
+    if (data.sdvStatus === 'CHANGED_AFTER_VERIFIED') {
+        $('#sdv-show-type input[value=y]').click();
+    } else {
+        $('#sdv-show-type input[value=n]').click();
+    }
 
-        $('#sdv-show-type').change(function () {
-            itemsTable.clear().draw();
-            getItems();
-        }).change();
+    $('#sdv-show-type').change(function () {
+        itemsTable.clear().draw();
+        getItems();
+    }).change();
 
-        var verifyButton = $(this).siblings('[name=sdvVerify]');
-        $('#sdvVerify').off('click').click(function () {
-            $(verifyButton).click();
-        });
-
-        jQuery.blockUI({
-            message: jQuery('#itemsdv'), css: {
-                cursor: 'default',
-                top: '40px',
-                left: calcPopupPos(),
-                right: calcPopupPos()
-            }
-        });
-        setTimeout(setPopupPos, 1);
+    var verifyButton = $(this).siblings('[name=sdvVerify]');
+    $('#sdvVerify').off('click').click(function () {
+        $(verifyButton).click();
     });
+
+    jQuery.blockUI({
+        message: jQuery('#itemsdv'), css: {
+            cursor: 'default',
+            top: '40px',
+            left: calcPopupPos(),
+            right: calcPopupPos()
+        }
+    });
+    setTimeout(setPopupPos, 1);
+    })
+    ;
 
     var sdvTableHeaders = $('#sdv > thead').children();
     var sdvtColumnTitles = sdvTableHeaders.filter('.header').children();
@@ -560,8 +597,8 @@
 
     var popupIndex = new URLSearchParams(location.search).get('popupIndex');
     if (popupIndex) {
-        $(function() {
-            setTimeout(function() {
+        $(function () {
+            setTimeout(function () {
                 $('#sdv button.popupSdv').eq(popupIndex).click();
             }, 1);
         });
