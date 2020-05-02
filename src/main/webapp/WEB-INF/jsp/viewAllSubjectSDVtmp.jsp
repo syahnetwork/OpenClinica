@@ -372,20 +372,10 @@
 
     <a id="clear-filter" href="javascript:clearFilter()">Clear Filter</a>
 
-    <div class="site-filter"><label for="site-filter">Show Calculated Values</label>
-        <label for=""><input type="checkbox" onclick="siteFilter()" id="site-filter" name="site-filter"></label></div>
-
-    <script>function siteFilter() {
-        $('input[id="site-filter"]').change(function () {
-            if (this.checked) {
-                $('#sdv-items').parents('div#sdv-items_wrapper').first().hide()
-            } else {
-                $('#sdv-items').parents('div#sdv-items_wrapper').first().show()
-            }
-        })
-    }
-    </script>
-
+    <div class="site-filter">
+        <label for="site-filter">Show Calculated Values</label>
+        <label for=""><input type="checkbox" onclick="siteFilter()" id="site-filter" name="site-filter"></label>
+    </div>
 
     <table id='sdv-items' style="width:100%">
         <thead>
@@ -532,6 +522,17 @@
 
                 setTimeout(setPopupPos, 1);
             });
+        }
+
+        function siteFilter() {
+            $('input[id="site-filter"]').change(function () {
+                if (getItems().data)
+                    if (this.checked) {
+                        $('#sdv-items').parents('div#sdv-items_wrapper').first().hide()
+                    } else {
+                        $('#sdv-items').parents('div#sdv-items_wrapper').first().show()
+                    }
+            })
         }
 
         $('#sdv-show-type').off('change');
