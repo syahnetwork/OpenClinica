@@ -221,7 +221,6 @@
 <script type="text/JavaScript" language="JavaScript"
         src="https://cdn.datatables.net/plug-ins/1.10.16/sorting/datetime-moment.js"></script>
 
-
 <style>
     #participantId {
         width: 300px;
@@ -253,7 +252,7 @@
         overflow-y: auto;
     }
 
-    #sdv_row1 > td:last-child {
+    #sdv td:last-child {
         white-space: nowrap;
     }
 
@@ -299,15 +298,12 @@
         background-color: transparent;
     }
 
-    #clear-filter {
-        float: left;
-        margin: 5px 10px;
+    .sdvCheck {
+        margin-top: 7px !important;
     }
 
-    .site-filter {
-        position: relative;
-        margin-right: 70%;
-        margin-top: 0.5%
+    .icon.icon-icon-SDV-doubleCheck {
+        margin-top: 1px;
     }
 
     .text-left {
@@ -324,6 +320,17 @@
 
     .blockUI.blockMsg.blockPage {
         padding: 0 !important;
+    }
+
+    #clear-filter {
+        float: left;
+        margin: 5px 10px;
+    }
+
+    .site-filter {
+        position: relative;
+        margin-right: 70%;
+        margin-top: 0.5%
     }
 
 </style>
@@ -371,10 +378,11 @@
     </fieldset>
 
     <a id="clear-filter" href="javascript:clearFilter()">Clear Filter</a>
-
     <div class="site-filter">
         <label for="site-filter">Show Calculated Values</label>
-        <label for=""><input type="checkbox" onclick="siteFilter()" id="site-filter" name="site-filter"></label>
+        <label for="">
+            <input type="checkbox" onclick="" id="site-filter" name="site-filter">
+        </label>
     </div>
 
     <table id='sdv-items' style="width:100%">
@@ -394,6 +402,7 @@
     </table>
     <input type="button" id="sdvVerify" name="sdvVerify" value="Verify">
 </div>
+
 
 <script>
     var itemsTable = jQuery('#sdv-items').DataTable({
@@ -437,7 +446,7 @@
     }
 
     function formatDateTime(date) {
-        return moment(date).format('DD-MMM-YYYY hh:mm');
+        return moment(date).utc().format('DD-MMM-YYYY hh:mm');
     }
 
     function calcPopupPos() {
@@ -472,10 +481,16 @@
         var data = $(this).data();
         var url = 'auth/api/sdv/studies/' + data.studyOid + '/events/' + data.eventOid + '/occurrences/' + data.eventOrdinal + '/forms/' + data.formOid + '/participants/' + data.participantId + '/sdvItems';
 
+// console.log('adam = '+ JSON.stringify(data))
+
+        // var scores = {
+        //     John: 2, Sarah: 3, Janet: 1
+        // };
+        // var filtered = Object.filter(scores, score => score > 1);
+        // console.log(filtered);
         function getItems() {
             var sinceLastVerified = $('#sdv-show-type input:checked').val();
             $.get(url + '?changedAfterSdvOnlyFilter=' + sinceLastVerified, function (data) {
-
                 $('#participantId').text(data.participantId);
                 if (data.repeatingEvent) {
                     $('#eventName').text(data.eventName + ' (' + data.eventOrdinal + ')');
@@ -488,11 +503,73 @@
                 $('#eventStartDate').text(data.eventStartDate);
                 $('#formStatus').text(data.formStatus);
                 $('#sdvStatus').text(translate(data.sdvStatus));
+                // let b = data.sdvItems
+                // let itemCalculated = data.sdvItems.filter(value => value.itemResponseType === 8).length
+                let itemCalculated = data.sdvItems.filter(value => value.itemResponseType === 8)
+                // console.log('adam = ' + itemCalculated)
+                console.log('adam = ' + JSON.stringify(itemCalculated))
 
-                data.sdvItems.sort(function (a, b) {
+                if (data.sdvItems.itemResponseType !== 8) {
+                    data.sdvItems.sort(function (a, b) {
+                        return a.itemId - b.itemId;
+                    });
+                    itemsTable.rows.add(data.sdvItems.map(function (item) {
+                        item.descName = (item.briefDescription || item.label || '') + ' (' + item.name + ')';
+                        if (item.repeatingGroup) {
+                            item.descName += ' (' + item.ordinal + ')';
+                        }
+
+                        item.lastVerifiedDate = data.lastVerifiedDate;
+                        if (item.lastVerifiedDate != null && item.lastModifiedDate > item.lastVerifiedDate) {
+                            item.value += '&nbsp; <img src="../images/changed_since_verified.png" width="16">';
+                        }
+                        if (!item.lastVerifiedDate) {
+                            item.lastVerifiedDate = 'Never';
+                        } else {
+                            item.lastVerifiedDate = formatDateTime(item.lastVerifiedDate);
+                        }
+                        item.lastModifiedDate = formatDateTime(item.lastModifiedDate);
+                        item.lastModifiedBy = item.lastModifiedUserFirstName + ' ' + item.lastModifiedUserLastName;
+
+                        item.actions =
+                            '<a title="View Form" class="icon icon-view-within" href="../ResolveDiscrepancy' +
+                            '?itemDataId=' + item.itemDataId +
+                            '&popupIndex=' + popupIndex +
+                            '"></a>';
+                        return item;
+                    }));
+                    itemsTable.draw();
+                } else {
+
+                }
+                setTimeout(setPopupPos, 1);
+            });
+        }
+
+        function getItemsCalculated() {
+            var sinceLastVerified = $('#sdv-show-type input:checked').val();
+            $.get(url + '?changedAfterSdvOnlyFilter=' + sinceLastVerified, function (data) {
+                $('#participantId').text(data.participantId);
+                if (data.repeatingEvent) {
+                    $('#eventName').text(data.eventName + ' (' + data.eventOrdinal + ')');
+                } else {
+                    $('#eventName').text(data.eventName);
+                }
+                $('#formName').text(data.formName);
+                $('#sdvRequirement').text(translate(data.sdvRequirement));
+                $('#siteName').text(data.siteName);
+                $('#eventStartDate').text(data.eventStartDate);
+                $('#formStatus').text(data.formStatus);
+                $('#sdvStatus').text(translate(data.sdvStatus));
+                // let b = data
+                // let itemCalculated = b.sdvItems.filter(value => value.itemResponseType === 8).length
+                let itemCalculated = data.sdvItems.filter(value => value.itemResponseType === 8)
+                // console.log('adam = ' + JSON.stringify(itemCalculated))
+
+                itemCalculated.sort(function (a, b) {
                     return a.itemId - b.itemId;
                 });
-                itemsTable.rows.add(data.sdvItems.map(function (item) {
+                itemsTable.rows.add(itemCalculated.map(function (item) {
                     item.descName = (item.briefDescription || item.label || '') + ' (' + item.name + ')';
                     if (item.repeatingGroup) {
                         item.descName += ' (' + item.ordinal + ')';
@@ -515,7 +592,6 @@
                         '?itemDataId=' + item.itemDataId +
                         '&popupIndex=' + popupIndex +
                         '"></a>';
-
                     return item;
                 }));
                 itemsTable.draw();
@@ -524,16 +600,15 @@
             });
         }
 
-        function siteFilter() {
-            $('input[id="site-filter"]').change(function () {
-                if (getItems().data)
-                    if (this.checked) {
-                        $('#sdv-items').parents('div#sdv-items_wrapper').first().hide()
-                    } else {
-                        $('#sdv-items').parents('div#sdv-items_wrapper').first().show()
-                    }
-            })
-        }
+        $('input[id="site-filter"]').change(function () {
+            if (this.checked) {
+                itemsTable.clear().draw();
+                getItemsCalculated()
+            } else {
+                itemsTable.clear().draw();
+                getItems()
+            }
+        })
 
         $('#sdv-show-type').off('change');
         if (data.sdvStatus === 'CHANGED_AFTER_VERIFIED') {
@@ -562,6 +637,7 @@
         });
         setTimeout(setPopupPos, 1);
     });
+
 
     var sdvTableHeaders = $('#sdv > thead').children();
     var sdvtColumnTitles = sdvTableHeaders.filter('.header').children();
